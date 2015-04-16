@@ -1,0 +1,12 @@
+{
+    "name": "danny/btw-ic-prestaties",
+    "authors": [
+        {
+            "name": "Danny van Kooten",
+            "email": "dannyvankooten@gmail.com"
+        }
+    ],
+    "require": {
+        "guzzlehttp/guzzle": "~5.2"
+    }
+}
