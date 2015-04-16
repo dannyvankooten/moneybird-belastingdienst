@@ -1,4 +1,4 @@
-MoneyBird IC opgave
+MoneyBird ICP opgave
 ==================
 
-Helper script voor intracommunautaire prestaties opgaaf.
+Helper script voor het doen van de intracommunautaire prestaties opgave.
