@@ -1,0 +1,12 @@
+<filter_invoice_filter>
+	<filter_filter_rule>
+		<filter1>
+			<filter_scope>tax_percentage</filter_scope>
+			<tax_rate_id>501022</tax_rate_id>
+		</filter1>
+		<filter2>
+			<filter_scope>invoice_date</filter_scope>
+			<date_scope>last_quarter</date_scope>
+		</filter2>
+	</filter_filter_rule>
+</filter_invoice_filter>
