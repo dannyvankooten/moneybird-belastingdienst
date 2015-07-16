@@ -36,6 +36,12 @@ foreach( $invoices as $invoice ) {
 		continue;
 	}
 
+	// skip invoices with a negative amount (because of refunds and currency values)
+	if( $invoice->{"total-price-incl-tax"} < 0 ) {
+		continue;
+	}
+
+	// why are we skipping Greece? todo: find out
 	if( $invoice->country === 'GR' ) {
 		continue;
 	}
