@@ -6,7 +6,7 @@
 		</filter1>
 		<filter2>
 			<filter_scope>invoice_date</filter_scope>
-			<date_scope>last_quarter</date_scope>
+			<date_scope>{{period}}</date_scope>
 		</filter2>
 	</filter_filter_rule>
 </filter_invoice_filter>

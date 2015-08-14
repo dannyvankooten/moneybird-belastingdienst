@@ -7,6 +7,11 @@
         }
     ],
     "require": {
-        "guzzlehttp/guzzle": "~5.2"
+        "guzzlehttp/guzzle": "~5.2",
+        "symfony/console": "^2.7"
+    },
+    "autoload": {
+      "classmap": [ "src/" ],
+      "files": [ "src/functions.php" ]
     }
 }
