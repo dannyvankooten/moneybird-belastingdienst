@@ -4,6 +4,8 @@
 use Command\HtmlCommand;
 use Symfony\Component\Console\Application;
 
+error_reporting( E_ALL );
+
 require __DIR__.'/vendor/autoload.php';
 
 // fire up new application instance

@@ -60,39 +60,40 @@ class HtmlCommand extends Command {
 		$companies = array();
 		foreach( $invoices as $invoice ) {
 
-			if( empty( $invoice->{"tax-number"} ) || empty( $invoice->country ) ) {
+			if( empty( $invoice->{"tax-number"} ) ) {
+				$output->writeln( "Skipping invoice #{$invoice->id} because of empty tax number." );
+				continue;
+			} elseif( empty( $invoice->country ) ) {
+				$output->writeln( "Skipping invoice because of empty country." );
 				continue;
 			}
 
 			// skip invoices with a negative amount (because of refunds and currency values)
 			if( $invoice->{"total-price-incl-tax"} < 0 ) {
-				continue;
+				$output->writeln( sprintf( "Skipping invoice #%s because of total %s", $invoice->id, $invoice->currency . $invoice->{"total-price-incl-tax"} ) );
+
+				// skip this or include this?
+				//continue;
 			}
 
-			// why are we skipping Greece? todo: find out
-			if( $invoice->country === 'GR' ) {
-				continue;
-			}
-
+			// use conversion offered by MoneyBird
 			if( $invoice->currency !== 'EUR' ) {
-				$total = $invoice->{"total-price-incl-tax"} * ( USD_TO_EUR_EXCHANGE_RATE / 1.02 );
+				$total = $invoice->{"total-price-incl-tax-base"};
 			} else {
 				$total = $invoice->{"total-price-incl-tax"};
 			}
 
 			// we need the vat number without the country code
-			$country = substr( $invoice->{"tax-number"}, 0, 2 );
-			$vat_number = (string) substr( $invoice->{"tax-number"}, 2 );
+			$country_code = substr( $invoice->{"tax-number"}, 0, 2 );
+			$tax_number = (string) substr( $invoice->{"tax-number"}, 2 );
 
 			// add to total or create new entry
-			if( array_key_exists( $vat_number, $companies ) ) {
-				$companies[ $vat_number ]->total_services += floor( $total );
+			if( array_key_exists( $tax_number, $companies ) ) {
+				$output->writeln( "Adding value to existing customer." );
+				$companies[ $tax_number ]->addValue( $total );
 			} else {
-				$company = new StdClass;
-				$company->total_services = floor( $total );
-				$company->country_code = $country;
-				$company->vat_number = $vat_number;
-				$companies[ $vat_number ] = $company;
+				$customer = new \Customer( $total, $country_code, $tax_number );
+				$companies[ $tax_number ] = $customer;
 			}
 		}
 
@@ -103,18 +104,21 @@ class HtmlCommand extends Command {
 		$index = 0;
 		$total = 0;
 
-		foreach( $companies as $company ) {
+		/**
+		 * @var \Customer $customer
+		 */
+		foreach( $companies as $customer ) {
 
 			$row_html = generate_row_html( array(
 				'index' => $index++,
-				'vat_number' => $company->vat_number,
-				'country_code' => $company->country_code,
-				'total_services' => floor( $company->total_services )
+				'vat_number' => $customer->tax_number,
+				'country_code' => $customer->country_code,
+				'total_services' => $customer->getTotalValue()
 			) );
 
 			$html .= $row_html . PHP_EOL . PHP_EOL;
 
-			$total += floor( $company->total_services );
+			$total += $customer->getTotalValue();
 
 			// quit at 100 rows
 			if( $index >= 100 ) {
@@ -123,7 +127,7 @@ class HtmlCommand extends Command {
 			}
 		}
 
-		$output->writeln( "Total reverse charged: " . $total );
+		$output->writeln( "Total reverse charged: " . floor( $total ) );
 
 		// write final html to a file: /build/icp-YEAR-QUARTER.html
 		$filename = '/build/icp-'. date('Y') . '-' . ceil( ( ( date( 'm' ) - 3 ) / 3 ) ) . '.html';
