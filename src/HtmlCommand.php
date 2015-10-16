@@ -1,6 +1,8 @@
 <?php
 
-namespace Command;
+namespace WelMakkelijker\Command;
+
+use WelMakkelijker\Customer;
 
 use stdClass;
 use Symfony\Component\Console\Command\Command;
@@ -68,13 +70,13 @@ class HtmlCommand extends Command {
 				continue;
 			}
 
-			// skip invoices with a negative amount (because of refunds and currency values)
-			if( $invoice->{"total-price-incl-tax"} < 0 ) {
-				$output->writeln( sprintf( "Skipping invoice #%s because of total %s", $invoice->id, $invoice->currency . $invoice->{"total-price-incl-tax"} ) );
-
-				// skip this or include this?
-				//continue;
-			}
+//			// skip invoices with a negative amount (because of refunds and currency values)
+//			if( $invoice->{"total-price-incl-tax"} < 0 ) {
+//				$output->writeln( sprintf( "Skipping invoice #%s because of total %s", $invoice->id, $invoice->currency . $invoice->{"total-price-incl-tax"} ) );
+//
+//				// skip this or include this?
+//				//continue;
+//			}
 
 			// use conversion offered by MoneyBird
 			if( $invoice->currency !== 'EUR' ) {
@@ -92,7 +94,7 @@ class HtmlCommand extends Command {
 				$output->writeln( "Adding value to existing customer." );
 				$companies[ $tax_number ]->addValue( $total );
 			} else {
-				$customer = new \Customer( $total, $country_code, $tax_number );
+				$customer = new Customer( $total, $country_code, $tax_number );
 				$companies[ $tax_number ] = $customer;
 			}
 		}
@@ -105,7 +107,7 @@ class HtmlCommand extends Command {
 		$total = 0;
 
 		/**
-		 * @var \Customer $customer
+		 * @var Customer $customer
 		 */
 		foreach( $companies as $customer ) {
 

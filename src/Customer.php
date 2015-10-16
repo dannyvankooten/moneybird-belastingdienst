@@ -1,11 +1,22 @@
 <?php
 
+namespace WelMakkelijker;
+
 class Customer {
 
+	/**
+	 * @var int
+	 */
 	public $total_value = 0;
 
+	/**
+	 * @var string
+	 */
 	public $country_code = '';
 
+	/**
+	 * @var string
+	 */
 	public $tax_number = '';
 
 	/**

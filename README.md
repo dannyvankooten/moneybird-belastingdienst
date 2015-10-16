@@ -14,7 +14,6 @@ After cloning the repository, create a `config.php` file in the root of your pro
 define( 'MONEYBIRD_USERNAME', 'your-username' );
 define( 'MONEYBIRD_EMAIL', 'your-email' );
 define( 'MONEYBIRD_PASSWORD', 'your-password' );
-define( 'USD_TO_EUR_EXCHANGE_RATE', 0.90 );
 ```
 
 You can then run the following command to generate the HTML. It will dump the HTML to a file in the `build/` subdirectory.
