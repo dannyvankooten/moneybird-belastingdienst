@@ -2,6 +2,7 @@
 
 namespace WelMakkelijker\Command;
 
+use Symfony\Component\Console\Question\ConfirmationQuestion;
 use WelMakkelijker\Customer;
 
 use stdClass;
@@ -151,6 +152,13 @@ class HtmlCommand extends Command {
 		$filename = $this->getFileName( $input->getOption('period'));
 		file_put_contents( __DIR__ . '/../' . $filename, $html );
 		$output->writeln( "<comment>HTML generated and written to {$filename}.</comment>" );
+
+		$helper = $this->getHelper('question');
+		$question = new ConfirmationQuestion('Do you want to open this file now? (yes) ');
+
+		if ($helper->ask($input, $output, $question)) {
+			shell_exec( 'open ' . $filename . ' -a "Sublime Text"' );
+		}
 	}
 
 	/**
