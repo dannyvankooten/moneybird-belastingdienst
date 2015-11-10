@@ -11,6 +11,12 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use GuzzleHttp\Client;
 
+/**
+ * Class HtmlCommand
+ *
+ * @package WelMakkelijker\Command
+ * @todo Refactor logic out of this class
+ */
 class HtmlCommand extends Command {
 
 	protected function configure() {
@@ -49,34 +55,26 @@ class HtmlCommand extends Command {
 		$payload = str_replace( '{{period}}', $input->getOption( 'period'), $payload );
 
 		// request invoices from moneybird api
-		$output->writeln( "Fetching invoices from MoneyBird." );
+		$output->writeln( "<comment>Fetching invoices from MoneyBird.</comment>" );
 		$response = $client->post('/invoices/filter/advanced.xml', [
 			'body' => $payload
 		]);
 
 		$invoices = $response->xml();
-		$output->writeln( count( $invoices ) . " invoices fetched." );
+		$output->writeln( "<comment>" . count( $invoices ) . " invoices fetched.</comment>" );
 
 		// calculate the totals per VAT number
-		$output->writeln( "Calculating totals per VAT number." );
+		$output->writeln( "<comment>Calculating totals per VAT number.</comment>" );
 		$companies = array();
 		foreach( $invoices as $invoice ) {
 
 			if( empty( $invoice->{"tax-number"} ) ) {
-				$output->writeln( "Skipping invoice #{$invoice->id} because of empty tax number." );
+				$output->writeln( "<comment>Skipping invoice #{$invoice->id} because of empty tax number.</comment>" );
 				continue;
 			} elseif( empty( $invoice->country ) ) {
-				$output->writeln( "Skipping invoice because of empty country." );
+				$output->writeln( "<comment>Skipping invoice #{$invoice->id} because of empty country.</comment>" );
 				continue;
 			}
-
-//			// skip invoices with a negative amount (because of refunds and currency values)
-//			if( $invoice->{"total-price-incl-tax"} < 0 ) {
-//				$output->writeln( sprintf( "Skipping invoice #%s because of total %s", $invoice->id, $invoice->currency . $invoice->{"total-price-incl-tax"} ) );
-//
-//				// skip this or include this?
-//				//continue;
-//			}
 
 			// use conversion offered by MoneyBird
 			if( $invoice->currency !== 'EUR' ) {
@@ -91,17 +89,25 @@ class HtmlCommand extends Command {
 
 			// add to total or create new entry
 			if( array_key_exists( $tax_number, $companies ) ) {
-				$output->writeln( "Adding value to existing customer." );
+				$output->writeln( "<comment>Adding EUR{$total} to {$country_code}{$tax_number}.</comment>" );
 				$companies[ $tax_number ]->addValue( $total );
 			} else {
+				$output->writeln( "<comment>Adding {$country_code}{$tax_number} with a total of EUR{$total}.</comment>");
 				$customer = new Customer( $total, $country_code, $tax_number );
 				$companies[ $tax_number ] = $customer;
 			}
 		}
 
-		// loop through reverse charged invoices and generate correct HTML for Belastingdienst.nl
-		$output->writeln( "Generating HTML for Belastingdienst.nl site." );
+		// Sort (highest total to lowest)
+		usort( $companies, function( Customer $a, Customer $b ) {
+			if ($a->getTotalValue() == $b->getTotalValue() ) return 0;
+            return ($a->getTotalValue() > $b->getTotalValue()) ? -1 : 1;
+		});
 
+		// Start generating HTML
+		$output->writeln( "<comment>Generating HTML for Belastingdienst.nl site.</comment>" );
+
+		// loop through reverse charged invoices and generate correct HTML for Belastingdienst.nl
 		$html = '';
 		$index = 0;
 		$total = 0;
@@ -124,19 +130,40 @@ class HtmlCommand extends Command {
 
 			// quit at 100 rows
 			if( $index >= 100 ) {
-				$output->writeln( "More than 100 company VAT numbers were found, but you can only submit up to a 100.... " );
+				$output->writeln( "<error>More than 100 company VAT numbers were found, but you can only submit up to a 100....</error>" );
+				$output->writeln( "<error>Contact your tax advisor...</error>" );
 				break;
 			}
 		}
 
-		$output->writeln( "Total reverse charged: " . floor( $total ) );
+		// output table
+		$table = $this->getHelper('table');
+		$table->setHeaders(array('VAT Number', 'Amount'));
+		$table->setRows( array_map( function($c) {
+			/** @var Customer $c */
+			return array( $c->country_code . $c->tax_number, '€' . $c->getTotalValue() );
+		}, $companies ) );
+		$table->render($output);
+
+		$output->writeln( "<info>Total reverse charged: €" . floor( $total ) .'</info>');
 
 		// write final html to a file: /build/icp-YEAR-QUARTER.html
-		$filename = '/build/icp-'. date('Y') . '-' . ceil( ( ( date( 'm' ) - 3 ) / 3 ) ) . '.html';
+		$filename = $this->getFileName( $input->getOption('period'));
 		file_put_contents( __DIR__ . '/../' . $filename, $html );
-		$output->writeln( "HTML generated and written to {$filename}." );
+		$output->writeln( "<comment>HTML generated and written to {$filename}.</comment>" );
+	}
 
+	/**
+	 * @param $period
+	 *
+	 * @return string
+	 */
+	protected function getFileName( $period ) {
+		if( $period == 'last_quarter' ) {
+			return 'build/icp-' . date( 'Y' ) . '-q' . ceil( ( ( date( 'm' ) - 3 ) / 3 ) ) . '.html';
+		}
 
+		return 'build/icp-' . date( 'Y' ) . '-m' . ( date( 'm' ) - 1 ) . '.html';
 	}
 
 }
