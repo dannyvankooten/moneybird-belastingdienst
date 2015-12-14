@@ -2,6 +2,9 @@
 
 namespace WelMakkelijker\Command;
 
+use Symfony\Component\Console\Helper\Table;
+use Symfony\Component\Console\Helper\TableCell;
+use Symfony\Component\Console\Helper\TableSeparator;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use WelMakkelijker\Customer;
 
@@ -90,13 +93,16 @@ class HtmlCommand extends Command {
 
 			// add to total or create new entry
 			if( array_key_exists( $tax_number, $companies ) ) {
-				$output->writeln( "<comment>Adding EUR{$total} to {$country_code}{$tax_number}.</comment>" );
-				$companies[ $tax_number ]->addValue( $total );
+				$customer = $companies[ $tax_number ];
+				$customer->addValue( $total );
+				$output->writeln( "<comment>Adding EUR{$total} to {$customer->getFullTaxNumber()}.</comment>" );
+
 			} else {
-				$output->writeln( "<comment>Adding {$country_code}{$tax_number} with a total of EUR{$total}.</comment>");
 				$customer = new Customer( $total, $country_code, $tax_number );
 				$companies[ $tax_number ] = $customer;
+				$output->writeln( "<comment>Adding {$customer->getFullTaxNumber()} with a total of EUR{$total}.</comment>");
 			}
+
 		}
 
 		// Sort (highest total to lowest)
@@ -138,15 +144,19 @@ class HtmlCommand extends Command {
 		}
 
 		// output table
-		$table = $this->getHelper('table');
-		$table->setHeaders(array('VAT Number', 'Amount'));
-		$table->setRows( array_map( function($c) {
+		$table = new Table($output);
+		$table->setHeaders(array('#', 'VAT Number', 'Amount'));
+		$table->setRows( array_map( function($c, $index) {
 			/** @var Customer $c */
-			return array( $c->country_code . $c->tax_number, '€' . $c->getTotalValue() );
-		}, $companies ) );
-		$table->render($output);
-
-		$output->writeln( "<info>Total reverse charged: €" . floor( $total ) .'</info>');
+			return array( ++$index, $c->getFullTaxNumber(), '€' . $c->getTotalValue() );
+		}, $companies, array_keys( $companies ) ) );
+		$table->addRows(
+			array(
+				new TableSeparator(),
+				array('', new TableCell('Total: €' . floor( $total ), array('colspan' => 2))),
+			)
+		);
+		$table->render();
 
 		// write final html to a file: /build/icp-YEAR-QUARTER.html
 		$filename = $this->getFileName( $input->getOption('period'));

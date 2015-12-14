@@ -31,6 +31,13 @@ class Customer {
 	}
 
 	/**
+	 * @return string
+	 */
+	public function getFullTaxNumber() {
+		return $this->country_code . $this->tax_number;
+	}
+
+	/**
 	 * @param $value
 	 */
 	public function addValue( $value ) {
