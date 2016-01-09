@@ -1,26 +1,26 @@
 <div>
 	<div class="row">
 		<div class="row-content">
-			<label class="kolomregel">{{INDEX}}</label>
+			<label class="kolomregel">{{index}}</label>
 			<label class="displaynone">
 				3a. Intracommunautaire leveringen en diensten&nbsp;Regel1&nbsp;Landcode
 			</label>
-			<input type="text" name="rubriek3a[{{INDEX}}].landCode" class="text kolomlandcode" value="{{COUNTRY}}"><!-- ISO (2 char) country code -->
+			<input type="text" name="rubriek3a[{{index}}].landCode" class="text kolomlandcode" value="{{country}}"><!-- ISO (2 char) country code -->
 
 			<label class="displaynone">
 				3a. Intracommunautaire leveringen en diensten&nbsp;Regel1&nbsp;Nummer
 			</label>
-			<input type="text" name="rubriek3a[{{INDEX}}].nummer" maxlength="12" value="{{VAT_NUMBER}}" class="text kolomnummer">
+			<input type="text" name="rubriek3a[{{index}}].nummer" maxlength="12" value="{{vat_number}}" class="text kolomnummer">
 
 			<label class="displaynone">
 				3a. Intracommunautaire leveringen en diensten&nbsp;Regel1&nbsp;Leveringen
 			</label>
-			<span class="euro"><input type="text" name="rubriek3a[{{INDEX}}].leveringBedrag" maxlength="255" value="{{TOTAL_GOODS}}" class="text kolombedrag"></span>
+			<span class="euro"><input type="text" name="rubriek3a[{{index}}].leveringBedrag" maxlength="255" value="{{total_goods}}" class="text kolombedrag"></span>
 
 			<label class="displaynone">
 				3a. Intracommunautaire leveringen en diensten&nbsp;Regel1&nbsp;Diensten
 			</label>
-			<span class="euro"><input type="text" name="rubriek3a[{{INDEX}}].dienstBedrag" maxlength="255" value="{{TOTAL_SERVICES}}" class="text kolombedrag"></span>
+			<span class="euro"><input type="text" name="rubriek3a[{{index}}].dienstBedrag" maxlength="255" value="{{total_services}}" class="text kolombedrag"></span>
 
 		</div>
 	</div>

@@ -4,9 +4,15 @@ import xml.etree.ElementTree as ET
 import operator
 import math
 import os
+import argparse
 
 # TODO: Allow specifying a filter file as argument
-# TODO: Allow specifiying tax ID as argument
+
+# Read CLI arguments
+parser = argparse.ArgumentParser(description='Genereert formulier HTML voor de Belastingdienst opgave site.')
+parser.add_argument('--tax_rate_id', help='De tax rate ID die bij dit formulier hoort in MoneyBird.', default=501022)
+parser.add_argument('--period', help='De periode waarover je aangifte doet. Standaard is "last_month".', default="last_month")
+args = parser.parse_args()
 
 # Read some environment variables
 moneybird_username = os.environ.get('MONEYBIRD_USERNAME')
@@ -26,7 +32,7 @@ class Company:
 		return self.vat_number + ": " + str( self.total) + "\n"
 
 # Read filter.xml into variable
-payload = open('filters/icp.xml', 'r').read().replace('{{period}}','last_month')
+payload = open('filters/icp.xml', 'r').read().replace('{{tax_rate_id}}', str(args.tax_rate_id)).replace('{{period}}',args.period)
 
 # Request MoneyBird API
 r = requests.post('https://'+moneybird_username+'.moneybird.nl/api/v1.0/invoices/filter/advanced.xml',
@@ -60,7 +66,7 @@ html = ""
 template = open('templates/icp.html', 'r').read()
 
 for index, company in enumerate(companies):
-	html = html + template.replace("{{INDEX}}", str(index)).replace('{{VAT_NUMBER}}', company.vat_number[2:len(company.vat_number)]).replace('{{TOTAL_SERVICES}}', str(math.floor(company.total))).replace('{{TOTAL_GOODS}}', '').replace('{{COUNTRY}}', company.vat_number[0:2])
+	html = html + template.replace("{{index}}", str(index)).replace('{{vat_number}}', company.vat_number[2:len(company.vat_number)]).replace('{{total_services}}', str(math.floor(company.total))).replace('{{total_goods}}', '').replace('{{country}}', company.vat_number[0:2])
 
 file = open('/tmp/form.html','w').write(html)
 os.system('open /tmp/form.html -a "Sublime Text"')

@@ -6,7 +6,7 @@ Deze library helpt je met het doen van je aangifte bij de Belastingdienst door H
 Gebruik
 ==========
 
-_Environment Vars_
+**Environment variables**
 
 ```sh
 MONEYBIRD_USERNAME=jouwsubdomein
@@ -14,10 +14,18 @@ MONEYBIRD_EMAIL=john@doedoe.com
 MONEYBIRD_PASSWORD=geheim
 ```
 
+**Python packages**
+
+```sh
+pip install requests
+```
+
 Op dit moment wordt enkel het formulier voor de ICP opgave ondersteund, omdat die simpelweg het kutst is om handmatig te doen.
 
 ```py
-python icp.py
+python icp.py --help # Toon help
+python icp.py # Gebruik standaardwaardes
+python icp.py --period="last_month" --tax_rate_id=5000
 ```
 
 VATMOSS coming soon.
