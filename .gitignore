@@ -1,5 +1,2 @@
-vendor
-composer.lock
-config.php
 .idea
-build
+*.pyc
