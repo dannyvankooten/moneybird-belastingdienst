@@ -1,0 +1,112 @@
+<div class="sub-panel open-sub-panel addRemoveListItem updateSubPanelHeader">
+	<div class="sub-panel-header addRemoveListItemHeader">
+		<h5 class="updatableText">Kroatië</h5>
+		<h5 class="fixedText" style="display:none;">Levering vanuit Nederland</h5>
+
+		<a href="#" id="addRemoveLink" class="delete-link addRemoveRemoveButton" title="verwijder dit panel">Verwijderen</a>
+
+	</div>
+	<div class="sub-panel-content">
+	<fieldset>
+
+			<div class="row ">
+
+				<label for="meldinggegevens.leveringenInLidstaat.leveringen{{index}}.lidstaat">
+					Lidstaat waarin u hebt geleverd
+				</label>
+
+
+				<select id="meldinggegevens.leveringenInLidstaat.leveringen{{index}}.lidstaat" name="meldinggegevens.leveringenInLidstaat.leveringen[{{index}}].lidstaat" class="updateSubPanelHeader">
+					<option value="">Kies een land...</option>
+					<option value="BE">België</option>
+					<option value="BG">Bulgarije</option>
+					<option value="CY">Cyprus</option>
+					<option value="DK">Denemarken</option>
+					<option value="DE">Duitsland</option>
+					<option value="EE">Estland</option>
+					<option value="FI">Finland</option>
+					<option value="FR">Frankrijk</option>
+					<option value="EL">Griekenland</option>
+					<option value="HU">Hongarije</option>
+					<option value="IE">Ierland</option>
+					<option value="IT">Italië</option>
+					<option value="HR">Kroatië</option>
+					<option value="LV">Letland</option>
+					<option value="LT">Litouwen</option>
+					<option value="LU">Luxemburg</option>
+					<option value="MT">Malta</option>
+					<option value="AT">Oostenrijk</option>
+					<option value="PL">Polen</option>
+					<option value="PT">Portugal</option>
+					<option value="RO">Roemenië</option>
+					<option value="SI">Slovenië</option>
+					<option value="SK">Slowakije</option>
+					<option value="ES">Spanje</option>
+					<option value="CZ">Tsjechië</option>
+					<option value="GB">Verenigd Koninkrijk</option>
+					<option value="SE">Zweden</option>
+					<option value="{{country}}" selected="selected">{{country}}</option>
+				</select>
+
+
+			</div>
+
+			<div class="row ">
+				<label for="meldinggegevens.leveringenInLidstaat.leveringen{{index}}.btwBedrag">
+					Btw-bedrag
+				</label>
+
+				<span class="text-only">€</span> <!-- anders &#8364; -->
+				<input id="meldinggegevens.leveringenInLidstaat.leveringen{{index}}.btwBedrag" name="meldinggegevens.leveringenInLidstaat.leveringen[{{index}}].btwBedrag" class="text euro text-width120 text-autoNumeric btwBedrag" data-a-dec="," data-v-min="0.00" data-v-max="999999999.99" data-a-sep="." type="text" value="{{vat_total}}">
+			</div>
+
+			<div class="row ">
+				<label for="meldinggegevens.leveringenInLidstaat.leveringen{{index}}.btwPercentage">
+					Btw-percentage
+				</label>
+
+				<input id="meldinggegevens.leveringenInLidstaat.leveringen{{index}}.btwPercentage" name="meldinggegevens.leveringenInLidstaat.leveringen[{{index}}].btwPercentage" class="text align-right text-width120 text-autoNumeric btwPercentage" data-a-dec="," data-v-min="0.00" data-v-max="99.99" data-a-sep="." type="text" value="{{vat_rate}}"><label>%</label>
+			</div>
+
+
+			<div>
+
+				<div class="row  ">
+
+					<div class="label">
+						Btw-tarief
+					</div>
+
+
+					<div class="multiple-choice">
+
+						<div class="row">
+							<input id="meldinggegevens.leveringenInLidstaat.leveringen{{index}}.tariefSoort.tariefSoort1" name="meldinggegevens.leveringenInLidstaat.leveringen[{{index}}].tariefSoort.tariefSoort" class="radio" type="radio" value="STANDARD" checked="checked">
+							<label for="meldinggegevens.leveringenInLidstaat.leveringen{{index}}.tariefSoort.tariefSoort1">standaard</label>
+						</div>
+
+						<div class="row">
+							<input id="meldinggegevens.leveringenInLidstaat.leveringen{{index}}.tariefSoort.tariefSoort2" name="meldinggegevens.leveringenInLidstaat.leveringen[{{index}}].tariefSoort.tariefSoort" class="radio" type="radio" value="REDUCED">
+							<label for="meldinggegevens.leveringenInLidstaat.leveringen{{index}}.tariefSoort.tariefSoort2">gereduceerd</label>
+						</div>
+
+					</div>
+
+
+					</div>
+
+				</div>
+			<div class="row ">
+				<label for="meldinggegevens.leveringenInLidstaat.leveringen{{index}}.omzet">
+					Bedrag waarover btw wordt berekend
+				</label>
+
+				<span class="text-only">€</span> <!-- anders &#8364; -->
+				<input id="meldinggegevens.leveringenInLidstaat.leveringen{{index}}.omzet" name="meldinggegevens.leveringenInLidstaat.leveringen[{{index}}].omzet" class="text euro text-width120 text-autoNumeric omzetBedrag" data-a-dec="," data-v-min="0.00" data-v-max="999999999.99" data-a-sep="." type="text" value="{{total_excl_vat}}">
+
+
+			</div>
+
+		</fieldset>
+	</div>
+</div>
