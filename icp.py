@@ -56,7 +56,7 @@ html = ""
 template = open('templates/icp.html', 'r').read()
 
 for index, company in enumerate(companies):
-	html = html + template.replace("{{index}}", str(index)).replace('{{vat_number}}', company.vat_number[2:len(company.vat_number)]).replace('{{total_services}}', str(math.floor(company.total))).replace('{{total_goods}}', '').replace('{{country}}', company.vat_number[0:2])
+	html = html + template.replace("{{index}}", str(index)).replace('{{vat_number}}', company.vat_number[2:len(company.vat_number)]).replace('{{total_services}}', str(int(math.floor(company.total)))).replace('{{total_goods}}', '').replace('{{country}}', company.vat_number[0:2])
 
 # Write to file and open
 file = open('/tmp/form.html','w').write(html)
