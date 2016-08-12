@@ -54,10 +54,15 @@ companies = sorted(companies.values(), key=operator.attrgetter('total'),reverse=
 # Generate HTML
 html = ""
 template = open('templates/icp.html', 'r').read()
+total = 0.00
 
 for index, company in enumerate(companies):
 	html = html + template.replace("{{index}}", str(index)).replace('{{vat_number}}', company.vat_number[2:len(company.vat_number)]).replace('{{total_services}}', str(int(math.floor(company.total)))).replace('{{total_goods}}', '').replace('{{country}}', company.vat_number[0:2])
+	total += company.total
 
 # Write to file and open
 file = open('/tmp/form.html','w').write(html)
 os.system('open /tmp/form.html -a "Sublime Text"')
+
+# Write helpful line
+print "A total of " + str( total ) + " was reverse charged."
