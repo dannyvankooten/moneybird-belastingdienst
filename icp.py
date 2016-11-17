@@ -1,6 +1,7 @@
 import requests
 import xml.etree.ElementTree as ET
 import operator, math, os, argparse
+import pyperclip
 
 # Read CLI arguments
 parser = argparse.ArgumentParser(description='Genereert formulier HTML voor de Belastingdienst opgave site.')
@@ -60,9 +61,10 @@ for index, company in enumerate(companies):
 	html = html + template.replace("{{index}}", str(index)).replace('{{vat_number}}', company.vat_number[2:len(company.vat_number)]).replace('{{total_services}}', str(int(math.floor(company.total)))).replace('{{total_goods}}', '').replace('{{country}}', company.vat_number[0:2])
 	total += company.total
 
-# Write to file and open
-file = open('/tmp/form.html','w').write(html)
-os.system('open /tmp/form.html -a "Sublime Text"')
+# Copy to clipboard
+pyperclip.copy(html)
+
 
 # Write helpful line
 print "A total of " + str( total ) + " was reverse charged."
+print "Form HTML for belastingdienst.nl is on your clipboard."
