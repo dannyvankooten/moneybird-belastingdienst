@@ -56,12 +56,12 @@ function vatmossbot(data) {
    
    items.forEach((l) => {
       // fill inputs in new row
-      let $row = $context.find('.sub-panel-content > div:eq(2) > div').last();
+      let $row = $context.find('.sub-panel-content h6').last().parent();
       
       if($row.find('select').val() != 'NULL') {
          // add new row
          $context.find('a.add').get(0).click();
-         $row = $context.find('.sub-panel-content > div:eq(2) > div').last();
+         $row = $context.find('.sub-panel-content h6').last().parent();
       }
       
       setValue($row.find("select[id$='levland']"), countryMap[l.country]);
@@ -72,4 +72,3 @@ function vatmossbot(data) {
    })
    
 }
-
