@@ -53,32 +53,35 @@ function vatmossbot(data) {
          }
       });
 
-   let $context = window.jQuery('#MainContent');
-   if (!$context) {
-      throw new Error('element #MainContent not found');
+   let context = document.querySelector('#leveringeninvoer_levpanlijst1_levpan_panel');
+   if (!context) {
+      throw new Error('Row wrapping element not found');
    }
+  let rows = context.querySelector('.table-container').nextElementSibling;
 
    function setValue(el, value) {
-      el.val(value);
-      el.get(0).dispatchEvent(new Event('change'));
-      el.get(0).click();
+      el.setAttribute('value', value);
+      el.value = value;
+      el.click();
+      el.dispatchEvent(new Event('change'));
+      el.click();
    }
 
    items.forEach((l) => {
       // fill inputs in new row
-      let $row = $context.find('.sub-panel-content h6').last().parent();
+      let row = rows.children[rows.children.length - 1];
 
-      if($row.find('select').val() != 'NULL') {
+      if(row.querySelector('select').value != 'NULL') {
          // add new row
-         $context.find('a.add').get(0).click();
-         $row = $context.find('.sub-panel-content h6').last().parent();
+         context.querySelector('.toevoeg_link').click()
+         row = rows.children[rows.children.length - 1];
       }
 
-      setValue($row.find("select[id$='levland']"), countryMap[l.country]);
-      setValue($row.find("select[id$='levgegsoort']"), "LEVGEGSOORT2");
-      setValue($row.find("input[id$='levgegbtwbdrg']"), Math.floor(l.btwAmount));
-      setValue($row.find("input[id$='levgegbtwperc']"), l.btwPerc);
-      setValue($row.find("select[id$='levgegbtwtar']"), "LEVGEGBTWTAR1");
+      setValue(row.querySelector("select[id$='levland']"), countryMap[l.country]);
+      setValue(row.querySelector("select[id$='levgegsoort']"), "LEVGEGSOORT2");
+      setValue(row.querySelector("input[id$='levgegbtwbdrg']"), Math.floor(l.btwAmount));
+      setValue(row.querySelector("input[id$='levgegbtwperc']"), l.btwPerc);
+      setValue(row.querySelector("select[id$='levgegbtwtar']"), "LEVGEGBTWTAR1");
    })
 }
 ```
