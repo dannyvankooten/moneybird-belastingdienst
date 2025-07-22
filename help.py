@@ -6,6 +6,10 @@ from math import floor
 
 print("-------------")
 
+if len(sys.argv) <= 1:
+    print("Usage: help.py \"<table rows from https://moneybird.com/154876003116647713/report/tax/period:prev_quarter,country:overview/ here>\"")
+    sys.exit(0)
+
 data = sys.argv[1].strip().splitlines()
 total_vat_amount = 0.0
 out = ""
